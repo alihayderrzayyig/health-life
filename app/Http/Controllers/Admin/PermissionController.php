@@ -40,8 +40,8 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        $valitdated = $request->validate(['name' => ['required', 'min:3', 'max:100']]);
-        Permission::create(['name' => $valitdated['name']]);
+        $validated = $request->validate(['name' => ['required', 'min:3', 'max:100']]);
+        Permission::create(['name' => $validated['name']]);
         return to_route('admin.permissions.index')-> with('message', 'new permission add.');
     }
 
@@ -76,8 +76,8 @@ class PermissionController extends Controller
      */
     public function update(Request $request, Permission $permission)
     {
-        $valitdated = $request->validate(['name' => ['required', 'min:3', 'max:100']]);
-        $permission->update(['name' => $valitdated['name']]);
+        $validated = $request->validate(['name' => ['required', 'min:3', 'max:100']]);
+        $permission->update(['name' => $validated['name']]);
         return to_route('admin.permissions.index')->with('message', 'the permission is updated now!');
     }
 
