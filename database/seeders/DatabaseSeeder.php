@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(AdminSeeder::class);
         $this->call(ProfileSeeder::class);
+        $this->call(CategorySeeder::class);
 
         \App\Models\Post::factory(20)->create();
 
