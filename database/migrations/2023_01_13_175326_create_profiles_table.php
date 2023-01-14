@@ -13,12 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('posts', function (Blueprint $table) {
+        Schema::create('profiles', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->string('slug'); 
-            $table->string('title');
-            $table->text('body');
+            $table->string('bio');
+            $table->string('facebook_link');
+            $table->string('phone_num1');
+            $table->string('phone_num2');
             $table->timestamps();
         });
     }
@@ -30,6 +31,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('posts');
+        Schema::dropIfExists('profiles');
     }
 };

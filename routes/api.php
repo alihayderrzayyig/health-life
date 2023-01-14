@@ -1,7 +1,8 @@
 <?php
 
 use App\Http\Controllers\api\AuthController;
-use App\Http\Controllers\api\PostController;
+use App\Http\Controllers\api\PostController as apiPostController;
+use App\Http\Controllers\api\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -16,5 +17,8 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.ap
 //protracted route
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout.api');
-    Route::resource('post', PostController::class);
+    Route::resource('post', apiPostController::class);
+    // Route::resource('post', PostController::class)->parameter('post', 'post:slug');
 });
+
+Route::resource('/user', UserController::class)->parameter('user', 'user:slug');

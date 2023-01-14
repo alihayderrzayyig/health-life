@@ -9,9 +9,16 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Sanctum\HasApiTokens;
 use PhpParser\Node\Expr\FuncCall;
 
+
+
+use Spatie\Sluggable\HasSlug;
+use Spatie\Sluggable\SlugOptions;
+
+
+
 class User extends Authenticatable
 {
-    use HasApiTokens, HasFactory, Notifiable;
+    use HasApiTokens, HasFactory, Notifiable, HasSlug;
 
     /**
      * The attributes that are mass assignable.
@@ -45,7 +52,20 @@ class User extends Authenticatable
     ];
 
 
-    public function role(){
+
+    /**
+     * Get the options for generating the slug.
+     */
+    public function getSlugOptions(): SlugOptions
+    {
+        return SlugOptions::create()
+            ->generateSlugsFrom('name')
+            ->saveSlugsTo('slug');
+    }
+
+
+    public function role()
+    {
         return $this->belongsTo(Role::class);
     }
 
@@ -53,7 +73,12 @@ class User extends Authenticatable
     //     return $this->role()->where('name', 'admin')->exists();
     // }
 
-    public function hasRole(string $role):bool{
+    public function hasRole(string $role): bool
+    {
         return $this->role()->where('name', $role)->exists();
+    }
+
+    public function profile(){
+        return $this->hasOne(Profile::class);
     }
 }
