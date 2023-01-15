@@ -4,7 +4,9 @@ namespace App\Http\Controllers\api;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\api\StorPostRequest;
+use App\Http\Requests\api\UpdatePostRequest;
 use App\Http\Resources\PostResource;
+use App\Models\Image;
 use App\Models\Post;
 use App\Traits\HttpResponses;
 use Illuminate\Http\Request;
@@ -41,16 +43,23 @@ class PostController extends Controller
      */
     public function store(StorPostRequest $request)
     {
-        // $request->validate([
-        //     'title' => 'required',
-        //     'body' => 'required',
-        // ]);
-
         $post = Post::create([
             'user_id' => Auth::user()->id,
             'title' => $request->title,
-            'body' => $request->body
+            'description' => $request->description
         ]);
+        if ($request->has('images')) {
+            foreach ($request->file('images') as $image) {
+                // $imageName = $request['title'] . '-image-' . time() . rand(1, 1000) . '.' . $image->extension();
+                $imageName = 'post-image-' . time() . rand(1, 1000) . '.' . $image->extension();
+                $image->move(public_path('post_images'), $imageName);
+                Image::create([
+                    'post_id' => $post->id,
+                    'image' => $imageName
+                ]);
+            }
+        }
+
         return new PostResource($post);
     }
 
@@ -73,9 +82,21 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Post $post)
+    public function update(UpdatePostRequest $request, Post $post)
     {
-        $post->update($request->all());
+        $post->update($request->only(['title', 'description']));
+        
+        if ($request->has('images')) {
+            $post->deletePostImages();
+            foreach ($request->file('images') as $image) {
+                $imageName = 'post-image-' . time() . rand(1, 1000) . '.' . $image->extension();
+                $image->move(public_path('post_images'), $imageName);
+                Image::create([
+                    'post_id' => $post->id,
+                    'image' => $imageName
+                ]);
+            }
+        }
         return new PostResource($post);
     }
 
@@ -87,7 +108,7 @@ class PostController extends Controller
      */
     public function destroy(Post $post)
     {
-        return $this->isNotAuthorized($post) ? $this->isNotAuthorized($post) : $post->delete();
+        return $this->isNotAuthorized($post) ? $this->isNotAuthorized($post) : $post->deletePost();
         // return response(null,204);
     }
 

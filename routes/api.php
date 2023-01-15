@@ -17,7 +17,7 @@ Route::post('/register', [AuthController::class, 'register'])->name('register.ap
 //protracted route
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/logout', [AuthController::class, 'logout'])->name('logout.api');
-    Route::resource('post', apiPostController::class);
+    Route::resource('/post', apiPostController::class);
     // Route::resource('post', PostController::class)->parameter('post', 'post:slug');
 });
 

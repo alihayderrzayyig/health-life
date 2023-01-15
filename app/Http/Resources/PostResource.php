@@ -18,7 +18,7 @@ class PostResource extends JsonResource
             'id' => (string)$this->id,
             'attributes' => [
                 'title' => $this->title,
-                'body' => $this->body,
+                'description' => $this->description,
                 'created_at' => $this->created_at,
                 'updated_at' => $this->updated_at,
             ],
@@ -27,6 +27,9 @@ class PostResource extends JsonResource
                 'user_name' => (string)$this->user->name,
                 'user_email' => (string)$this->user->email,
             ],
+            'images' =>
+                $this->images
+            ,
         ];
     }
 }
